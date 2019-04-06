@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>教室管理</title>
+    <!-- Bootstrap core CSS -->
+    <link href="http://localhost/attence/public/static/admin/css/bootstrap.css" rel="stylesheet">
+     <link href="http://localhost/attence/public/static/admin/css/admin.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://localhost/attence/public/static/admin/font-awesome/css/font-awesome.min.css">
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" href="http://localhost/attence/public/static/admin/css/morris-0.4.3.min.css">
+    <link rel="stylesheet" href="http://localhost/attence/public/static/admin/css/custom.css">  
+    <style type="text/css">
+       .col-lg-4{
+        width: 100%;
+      }
+       th,td{
+        text-align: center;
+      }
+    </style> 
+    <script src="http://localhost/attence/public/static/admin/js/jquery-1.10.2.js"></script>
+    <script src="http://localhost/attence/public/static/admin/js/bootstrap.js"></script>
+      <script>
+        function deleteClassroom(){  
+          var checkedNum = $("input[name='tag']:checked").length;  
+           if(checkedNum==0){   
+            alert("请至少选择一项!");  
+             return false;  
+            }   
+           if(confirm("确定删除所选项目吗?")){  
+             var checkedList = new Array();     
+            $("input[name='tag']:checked").each(function(){  
+                   checkedList.push($(this).val());    
+               });  
+            var delitems = checkedList.toString();  
+         window.location.href="{:url('deletemore')}?data="+delitems ;
+        }
+      }
+      function qx(){   //全选
+         $(":checkbox").prop("checked",true );
+          }
+      function reves(){  //反选
+         $.each($(":checkbox"),function(){
+             $(this).prop("checked",!$(this).prop("checked"));
+         });
+        }
+      </script> 
+  </head>
+  <body>
+    {include file="common:header" /}
+    {include file="common:menu" /}
+    <div id="wrapper">   
+      <div id="page-wrapper" style="padding-top: 60px">
+        <div class="row">          
+          <div class="col-lg-12">
+            <ol class="breadcrumb">
+              <li class="active"><a href="{:url('user/index')}"><i class="fa fa-dashboard"></i> 首页</a></li>
+              <li class="active">教室管理</li>
+            </ol>
+          </div>
+        </div>
+        <div class="row">
+        <div class="panel panel-info" style="margin-left: 10px">
+              <div class="panel-heading">
+                <h3 class="panel-title">教室列表</h3>
+              </div>
+              <div class="panel-body">
+                <div class="form-group input-group">
+                    <button type="button" class="btn btn-success" float: left; onclick="javascript:window.location.href='{:url('addclassroom')}'">添加教室</button>
+                    <button type="button" class="btn btn-danger" float: left; onclick="deleteClassroom()">批量删除</button> 
+                    <form action="{:url('queryclassroom')}" method="post" style="margin-left:600px;margin-top: -35px;">
+                    <input type="text" class="form-control" name="roomname" style="width: 300px;" placeholder="请输入教室位置查询">  
+                    <span class="input-group-btn" style="display: inline-block;margin-left: -5px">
+                      <button class="btn btn-default" type="submit" ><i class="fa fa-search"></i></button>
+                    </span>  
+                     </form>    
+                </div>                
+                <div class="table-responsive">
+              <table class="table table-bordered table-hover table-striped tablesorter">
+                <thead>
+                  <tr>
+                    <th><input type="checkbox"></th>
+                    <th>位置 </th>
+                    <th>操作 </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {volist name="res" id="vo"}
+                  <tr>
+                    <td><input type="checkbox" name="tag" value="{$vo.id}"></td>
+                    <td>{$vo.roomname}</td>
+                    <td>
+                      &nbsp;&nbsp;
+                      <button type="button" class="btn btn-primary" style="height: 30px;width: 50px;padding: 5px" onclick="javascript:window.location.href='{:url('editclassroom',array('id'=>$vo['id']))}'">编辑</button>
+                      &nbsp;&nbsp;
+                      <button type="button" class="btn btn-danger" style="height: 30px;width: 50px;padding: 5px"  onclick="javascript:if(confirm('确定删除id为'+{$vo.roomname}+'的教室吗？')){window.location.href='{:url('deleteclassroom',array('id'=>$vo['id']))}}'}">删除</button>
+                    </td>
+                  </tr>
+                  {/volist}
+                </tbody>
+              </table>
+              <div>
+               <div class="form-group">
+                      <a class="btn btn-default" onclick="qx()" >全选</a>
+                      <a class="btn btn-default" onclick="reves()">反选</a>                
+              </div>
+              <div class="bs-example" style="margin-left:400px;margin-top: -70px">
+             {$res->render()}  
+            </div>           
+            </div>
+            </div>  
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </body>    
+  </html>
